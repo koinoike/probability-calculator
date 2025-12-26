@@ -224,8 +224,7 @@ function App() {
   ];
 
   return (
-    <div className="h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-neutral-950 flex items-start md:items-center justify-center p-3 md:p-6 relative overflow-hidden">
-      {" "}
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-neutral-950 flex items-center justify-center p-3 md:p-6 relative overflow-hidden">
       {/* Floating Pirate Emojis Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-15">
         {emojis.map((item, index) => {
@@ -253,9 +252,9 @@ function App() {
           );
         })}
       </div>
-      <div className="w-full max-w-md md:max-w-xl h-full md:h-auto flex items-center relative z-10">
+      <div className="w-full max-w-md md:max-w-xl relative z-10 my-4">
         <div
-          className="bg-gradient-to-br from-slate-900 via-slate-800 to-neutral-900 rounded-2xl md:rounded-3xl shadow-2xl border-2 md:border-4 border-amber-600 overflow-hidden backdrop-blur-sm w-full flex flex-col max-h-full"
+          className="bg-gradient-to-br from-slate-900 via-slate-800 to-neutral-900 rounded-2xl md:rounded-3xl shadow-2xl border-2 md:border-4 border-amber-600 overflow-hidden backdrop-blur-sm w-full flex flex-col max-h-[90vh]"
           style={{
             boxShadow:
               "0 0 60px rgba(217, 119, 6, 0.4), inset 0 0 30px rgba(0, 0, 0, 0.5)",
@@ -263,11 +262,10 @@ function App() {
         >
           {/* Header */}
           <div className="bg-gradient-to-r from-amber-900 via-orange-900 to-red-950 px-2 py-1 md:px-4 md:py-4 text-center border-b-4 border-amber-600 relative overflow-hidden flex-shrink-0">
-            {" "}
             <div className="absolute inset-0 bg-black/30"></div>
             <h1 className="text-sm md:text-2xl lg:text-3xl font-bold text-amber-200 drop-shadow-2xl flex items-center justify-center gap-1.5 mb-0 md:mb-1.5 relative z-10">
               <span className="text-base md:text-3xl lg:text-4xl">🏴‍☠️</span>
-              Pirate Bay Calculator
+              Калькулятор сокровищ пиратской бухты
               <span className="text-base md:text-3xl lg:text-4xl">⚓</span>
             </h1>
           </div>
