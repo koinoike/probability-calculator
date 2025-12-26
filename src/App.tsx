@@ -152,36 +152,42 @@ function App() {
     // Calculate how many additional shovels we need
     const needed = targetShovels - validShovels;
 
-    // Greedy algorithm: buy most cost-effective packs first
-    // 30 shovels pack = 0.233 rumb/shovel (best)
-    // 10 shovels pack = 0.3 rumb/shovel
-    // 3 shovels pack = 0.333 rumb/shovel (worst)
+    // Optimized algorithm: maximize shovels while minimizing cost
+    // Try all combinations and pick the one with most shovels for lowest cost
+    let bestCost = Infinity;
+    let bestShovels = 0;
+    let bestP3 = 0,
+      bestP10 = 0,
+      bestP30 = 0;
 
-    let remaining = needed;
-    let p30 = 0,
-      p10 = 0,
-      p3 = 0;
+    // Try different combinations
+    for (let p30 = 0; p30 <= Math.ceil(needed / 30) + 1; p30++) {
+      for (let p10 = 0; p10 <= Math.ceil(needed / 10) + 1; p10++) {
+        for (let p3 = 0; p3 <= Math.ceil(needed / 3) + 1; p3++) {
+          const totalShovels = p30 * 30 + p10 * 10 + p3 * 3;
+          const totalCost = p30 * 7 + p10 * 3 + p3 * 1;
 
-    // First, buy as many 30-packs as possible
-    if (remaining >= 30) {
-      p30 = Math.floor(remaining / 30);
-      remaining -= p30 * 30;
+          // Must meet minimum requirement
+          if (totalShovels >= needed) {
+            // Prefer: lower cost, or same cost with more shovels
+            if (
+              totalCost < bestCost ||
+              (totalCost === bestCost && totalShovels > bestShovels)
+            ) {
+              bestCost = totalCost;
+              bestShovels = totalShovels;
+              bestP3 = p3;
+              bestP10 = p10;
+              bestP30 = p30;
+            }
+          }
+        }
+      }
     }
 
-    // Then, buy 10-packs
-    if (remaining >= 10) {
-      p10 = Math.floor(remaining / 10);
-      remaining -= p10 * 10;
-    }
-
-    // Finally, buy 3-packs for the rest
-    if (remaining > 0) {
-      p3 = Math.ceil(remaining / 3);
-    }
-
-    setPack3(p3);
-    setPack10(p10);
-    setPack30(p30);
+    setPack3(bestP3);
+    setPack10(bestP10);
+    setPack30(bestP30);
   };
 
   // Function to calculate optimal packs to reach 100% probability
@@ -193,32 +199,41 @@ function App() {
 
     if (needed <= 0) return; // Already have enough
 
-    // Greedy algorithm: buy most cost-effective packs first
-    let remaining = needed;
-    let p30 = 0,
-      p10 = 0,
-      p3 = 0;
+    // Optimized algorithm: maximize shovels while minimizing cost
+    let bestCost = Infinity;
+    let bestShovels = 0;
+    let bestP3 = 0,
+      bestP10 = 0,
+      bestP30 = 0;
 
-    // First, buy as many 30-packs as possible
-    if (remaining >= 30) {
-      p30 = Math.floor(remaining / 30);
-      remaining -= p30 * 30;
+    // Try different combinations
+    for (let p30 = 0; p30 <= Math.ceil(needed / 30) + 1; p30++) {
+      for (let p10 = 0; p10 <= Math.ceil(needed / 10) + 1; p10++) {
+        for (let p3 = 0; p3 <= Math.ceil(needed / 3) + 1; p3++) {
+          const totalShovels = p30 * 30 + p10 * 10 + p3 * 3;
+          const totalCost = p30 * 7 + p10 * 3 + p3 * 1;
+
+          // Must meet minimum requirement
+          if (totalShovels >= needed) {
+            // Prefer: lower cost, or same cost with more shovels
+            if (
+              totalCost < bestCost ||
+              (totalCost === bestCost && totalShovels > bestShovels)
+            ) {
+              bestCost = totalCost;
+              bestShovels = totalShovels;
+              bestP3 = p3;
+              bestP10 = p10;
+              bestP30 = p30;
+            }
+          }
+        }
+      }
     }
 
-    // Then, buy 10-packs
-    if (remaining >= 10) {
-      p10 = Math.floor(remaining / 10);
-      remaining -= p10 * 10;
-    }
-
-    // Finally, buy 3-packs for the rest
-    if (remaining > 0) {
-      p3 = Math.ceil(remaining / 3);
-    }
-
-    setPack3(p3);
-    setPack10(p10);
-    setPack30(p30);
+    setPack3(bestP3);
+    setPack10(bestP10);
+    setPack30(bestP30);
   };
 
   // Function to calculate repulsion from mouse with smoother, bigger area
@@ -398,7 +413,7 @@ function App() {
                 <div className="mb-2 md:mb-4">
                   <label className="flex items-center gap-1.5 md:gap-2 text-[10px] md:text-sm font-semibold text-amber-200 mb-1.5 md:mb-3">
                     <span className="text-sm md:text-xl">🐍</span>
-                    Игнорировать клетки справа (стратегия "змейка"):
+                    Игнорировать клеток (змейка):
                   </label>
                   <div className="relative">
                     <input
@@ -415,8 +430,7 @@ function App() {
                   </div>
                   {validIgnoredCells > 0 && (
                     <p className="text-[8px] md:text-xs text-slate-500 mt-1 md:mt-2 text-center">
-                      Если справа никогда ничего не выпадает, то не копать в{" "}
-                      {validIgnoredCells}{" "}
+                      Не копать в {validIgnoredCells}{" "}
                       {validIgnoredCells === 1
                         ? "клетке"
                         : validIgnoredCells < 5
