@@ -4,6 +4,7 @@ function App() {
   const [step, setStep] = useState<number>(1);
   const [totalCells] = useState<number>(70);
   const [obstacles, setObstacles] = useState<number>(8);
+  const [ignoredCells, setIgnoredCells] = useState<string>("13");
   const [shovels, setShovels] = useState<string>("42");
   const [prizeParts, setPrizeParts] = useState<string>("6");
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -33,7 +34,12 @@ function App() {
     return res;
   }
 
-  const availableCells = totalCells - obstacles;
+  // Calculate available cells with ignored cells (0-20 range)
+  const validIgnoredCells = Math.max(
+    0,
+    Math.min(parseInt(ignoredCells) || 0, 20)
+  );
+  const availableCells = totalCells - obstacles - validIgnoredCells;
   const validShovels = Math.max(
     1,
     Math.min(parseInt(shovels) || 1, availableCells)
@@ -84,6 +90,12 @@ function App() {
     }
   };
 
+  const handleIgnoredCellsChange = (value: string) => {
+    if (value === "" || /^\d+$/.test(value)) {
+      setIgnoredCells(value);
+    }
+  };
+
   const handlePrizePartsChange = (value: string) => {
     if (value === "" || /^\d+$/.test(value)) {
       setPrizeParts(value);
@@ -101,6 +113,7 @@ function App() {
   const resetCalculator = () => {
     setStep(1);
     setObstacles(8);
+    setIgnoredCells("13");
     setShovels("42");
     setPrizeParts("6");
     setPack3(0);
@@ -356,15 +369,15 @@ function App() {
             {step === 1 && (
               <div className="animate-fade-in">
                 <h2 className="text-sm md:text-xl lg:text-2xl font-bold text-amber-300 mb-1 md:mb-1.5 text-center drop-shadow-lg">
-                  🚧 Шаг 1: Препятствия
+                  🚧 Шаг 1: Поле
                 </h2>
                 <p className="text-[10px] md:text-sm text-slate-400 text-center mb-2 md:mb-4">
-                  Сколько клеток заняты препятствиями на поле?
+                  Настройте параметры игрового поля
                 </p>
 
                 <div className="mb-2 md:mb-4">
                   <label className="flex items-center gap-1.5 md:gap-2 text-[10px] md:text-sm font-semibold text-amber-200 mb-1.5 md:mb-3">
-                    <span className="text-sm md:text-xl"></span>
+                    <span className="text-sm md:text-xl">🚫</span>
                     Клетки с препятствиями:
                   </label>
                   <div className="flex items-center gap-1.5 md:gap-4">
@@ -382,6 +395,36 @@ function App() {
                   </div>
                 </div>
 
+                <div className="mb-2 md:mb-4">
+                  <label className="flex items-center gap-1.5 md:gap-2 text-[10px] md:text-sm font-semibold text-amber-200 mb-1.5 md:mb-3">
+                    <span className="text-sm md:text-xl">🐍</span>
+                    Игнорировать клетки справа (стратегия "змейка"):
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={ignoredCells}
+                      onChange={(e) => handleIgnoredCellsChange(e.target.value)}
+                      className="w-full px-2 py-1.5 md:px-3.5 md:py-3.5 bg-slate-800 border-2 border-amber-600 rounded-lg md:rounded-xl text-base md:text-2xl font-medium text-amber-400 text-center focus:outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/30 transition shadow-xl"
+                      placeholder="0"
+                    />
+                    <span className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 text-slate-500 text-[10px] md:text-base pointer-events-none">
+                      / 20
+                    </span>
+                  </div>
+                  {validIgnoredCells > 0 && (
+                    <p className="text-[8px] md:text-xs text-slate-500 mt-1 md:mt-2 text-center">
+                      Не копать в {validIgnoredCells}{" "}
+                      {validIgnoredCells === 1
+                        ? "клетке"
+                        : validIgnoredCells < 5
+                        ? "клетках"
+                        : "клетках"}
+                    </p>
+                  )}
+                </div>
+
                 <div className="bg-slate-800/80 border-2 border-amber-600/50 rounded-lg md:rounded-xl p-1.5 md:p-4 mt-2 md:mt-6 shadow-xl backdrop-blur-sm">
                   <div className="flex justify-between items-center py-1 md:py-2 text-slate-400 text-[10px] md:text-sm border-b border-slate-700">
                     <span>Всего клеток:</span>
@@ -395,6 +438,14 @@ function App() {
                       {obstacles}
                     </strong>
                   </div>
+                  {validIgnoredCells > 0 && (
+                    <div className="flex justify-between items-center py-1 md:py-2 text-slate-400 text-[10px] md:text-sm border-b border-slate-700">
+                      <span>Игнорируется (змейка):</span>
+                      <strong className="text-amber-200 text-xs md:text-lg">
+                        {validIgnoredCells}
+                      </strong>
+                    </div>
+                  )}
                   <div className="flex justify-between items-center py-1 md:py-2 text-amber-300 text-[10px] md:text-base font-semibold">
                     <span>Доступно:</span>
                     <strong className="text-sm md:text-xl text-amber-400 drop-shadow-lg">
