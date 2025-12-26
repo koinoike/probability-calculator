@@ -171,6 +171,43 @@ function App() {
     setPack30(p30);
   };
 
+  // Function to calculate optimal packs to reach 100% probability
+  const reachHundredPercent = () => {
+    if (probabilityAll >= 1.0) return; // Already at 100%
+
+    // For 100% probability, we need enough shovels to cover all available cells
+    const needed = availableCells - validShovels;
+
+    if (needed <= 0) return; // Already have enough
+
+    // Greedy algorithm: buy most cost-effective packs first
+    let remaining = needed;
+    let p30 = 0,
+      p10 = 0,
+      p3 = 0;
+
+    // First, buy as many 30-packs as possible
+    if (remaining >= 30) {
+      p30 = Math.floor(remaining / 30);
+      remaining -= p30 * 30;
+    }
+
+    // Then, buy 10-packs
+    if (remaining >= 10) {
+      p10 = Math.floor(remaining / 10);
+      remaining -= p10 * 10;
+    }
+
+    // Finally, buy 3-packs for the rest
+    if (remaining > 0) {
+      p3 = Math.ceil(remaining / 3);
+    }
+
+    setPack3(p3);
+    setPack10(p10);
+    setPack30(p30);
+  };
+
   // Function to calculate repulsion from mouse with smoother, bigger area
   const getRepulsion = (x: number, y: number) => {
     const rect =
@@ -575,14 +612,24 @@ function App() {
                       <span className="text-sm md:text-xl">🛒</span>
                       Докупить наборы лопат
                     </h3>
-                    {probabilityAll < 0.5 && (
-                      <button
-                        onClick={reachFiftyPercent}
-                        className="px-2 py-1 md:px-3 md:py-1.5 bg-gradient-to-br from-green-600 to-emerald-700 text-white rounded-md md:rounded-lg text-[8px] md:text-xs font-semibold transition-all hover:from-green-500 hover:to-emerald-600 active:scale-95 border border-green-500/50"
-                      >
-                        🎯 До 50%
-                      </button>
-                    )}
+                    <div className="flex gap-1 md:gap-1.5">
+                      {probabilityAll < 0.5 && (
+                        <button
+                          onClick={reachFiftyPercent}
+                          className="px-2 py-1 md:px-3 md:py-1.5 bg-gradient-to-br from-green-600 to-emerald-700 text-white rounded-md md:rounded-lg text-[8px] md:text-xs font-semibold transition-all hover:from-green-500 hover:to-emerald-600 active:scale-95 border border-green-500/50"
+                        >
+                          🎯 До 50%
+                        </button>
+                      )}
+                      {probabilityAll < 1.0 && (
+                        <button
+                          onClick={reachHundredPercent}
+                          className="px-2 py-1 md:px-3 md:py-1.5 bg-gradient-to-br from-green-600 to-emerald-700 text-white rounded-md md:rounded-lg text-[8px] md:text-xs font-semibold transition-all hover:from-green-500 hover:to-emerald-600 active:scale-95 border border-green-500/50"
+                        >
+                          💯 До 100%
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   {/* Pack options */}
