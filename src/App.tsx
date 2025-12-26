@@ -413,7 +413,7 @@ function App() {
                 <div className="mb-2 md:mb-4">
                   <label className="flex items-center gap-1.5 md:gap-2 text-[10px] md:text-sm font-semibold text-amber-200 mb-1.5 md:mb-3">
                     <span className="text-sm md:text-xl">🐍</span>
-                    Игнорировать клеток (змейка):
+                    Игнорировать клетки справа (стратегия "змейка"):
                   </label>
                   <div className="relative">
                     <input
