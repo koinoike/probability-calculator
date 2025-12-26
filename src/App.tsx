@@ -235,13 +235,17 @@ function App() {
             ? { top: `${item.top}%`, left: `${position}%` }
             : { top: `${item.top}%`, right: `${position}%` };
 
+          // TypeScript guard: position is always defined because either left or right exists
+          const xPos = position ?? 0;
+          const repulsionX = hasLeft ? xPos : 100 - xPos;
+
           return (
             <div
               key={index}
               className={`absolute ${item.size} transition-all duration-700 ease-out`}
               style={{
                 ...positionStyle,
-                ...getRepulsion(hasLeft ? position : 100 - position, item.top),
+                ...getRepulsion(repulsionX, item.top),
               }}
             >
               {item.emoji}
