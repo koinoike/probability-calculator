@@ -415,7 +415,8 @@ function App() {
                   </div>
                   {validIgnoredCells > 0 && (
                     <p className="text-[8px] md:text-xs text-slate-500 mt-1 md:mt-2 text-center">
-                      Не копать в {validIgnoredCells}{" "}
+                      Если справа никогда ничего не выпадает, то не копать в{" "}
+                      {validIgnoredCells}{" "}
                       {validIgnoredCells === 1
                         ? "клетке"
                         : validIgnoredCells < 5
